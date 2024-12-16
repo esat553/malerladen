@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./db/db");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // Modelle
 const User = require("./models/User");
@@ -57,19 +59,32 @@ app.get("/", (req, res) => {
     });
 
 // Route für Authentifizierung
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const user = users.find(u => u.username === username && u.password === password);
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  try {
+      const user = await User.findOne({ where: { username: username }});
+      
+      if (!user) {
+          return res.status(401).json({ message: 'Ungültige Anmeldedaten' });
+      }
 
-    if (!user) {
-        return res.status(401).send('Ungültige Anmeldedaten');
-    }
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      
+      if (!isValidPassword) {
+          return res.status(401).json({ message: 'Ungültige Anmeldedaten' });
+      }
 
-    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, SECRET_KEY, {
-        expiresIn: '1h'
-    });
+      const token = jwt.sign(
+          { id: user.id, username: user.username, role: user.role }, 
+          SECRET_KEY, 
+          { expiresIn: '1h' }
+      );
 
-    res.json({ token });
+      res.json({ token });
+  } catch (error) {
+      res.status(500).json({ message: 'Server Error' });
+  }
 });
 
 // Route für Produkte
@@ -83,6 +98,6 @@ app.post('/products', async (req, res) => {
   });
 
 
-const PORT = process.env.DB_PORT || 5000;
+const PORT = 5001;
 
 app.listen(PORT, () => console.log(`server runs on port ${PORT}`));
