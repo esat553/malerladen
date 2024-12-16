@@ -8,7 +8,13 @@
       <form (ngSubmit)="onLogin()">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Benutzername</mat-label>
-          <input matInput [(ngModel)]="username" name="username" required />
+          <input
+            matInput
+            [(ngModel)]="username"
+            name="username"
+            (input)="clearErrorMessage()"
+            required
+          />
           <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
 
@@ -19,6 +25,7 @@
             [type]="hidePassword ? 'password' : 'text'"
             [(ngModel)]="password"
             name="password"
+            (input)="clearErrorMessage()"
             required
           />
           <button
@@ -43,6 +50,9 @@
           Anmelden
         </button>
       </form>
+      @if (errorMessage) {
+      <mat-error>{{ errorMessage }}</mat-error>
+      }
     </mat-card-content>
   </mat-card>
 </div>
