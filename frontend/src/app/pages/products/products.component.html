@@ -1,1 +1,54 @@
-<p>products works!</p>
+<app-nav></app-nav>
+<main class="products-page">
+  <!-- Search and Filter Section -->
+  <mat-card class="filter-section">
+    <mat-form-field appearance="outline">
+      <mat-label>Suche nach Produkten</mat-label>
+      <input matInput placeholder="Type to search..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-button-toggle-group>
+      <mat-button-toggle value="all">Alle</mat-button-toggle>
+      <mat-button-toggle value="paint">Farben</mat-button-toggle>
+      <mat-button-toggle value="tools">Werkzeuge</mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card>
+
+  <div class="content">
+    <div class="products-container">
+      @for (product of products; track $index) {
+      <mat-card class="product-item">
+        <span class="price-tag">{{ product.price }}€</span>
+        <img mat-card-image [src]="product.imagePath" [alt]="product.name" />
+
+        <mat-card-content class="product-content">
+          <mat-card-title>{{ product.name }}</mat-card-title>
+          <mat-card-subtitle>{{ product.description }}</mat-card-subtitle>
+        </mat-card-content>
+
+        <mat-card-actions class="product-actions">
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="editProduct(product)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="removeItem($index)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+      }
+    </div>
+  </div>
+
+  <!-- Floating Action Button with Speed Dial -->
+  <div class="fab-menu">
+    <button mat-fab extended color="primary" (click)="openAddProductDialog()">
+      <mat-icon>add</mat-icon>
+      neues Produkt
+    </button>
+  </div>
+</main>
