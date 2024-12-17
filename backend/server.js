@@ -14,10 +14,27 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // parst JSON Daten aus dem Request-Body
 
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+    req.user = user;
+    next();
+  });
+}
+
 const SECRET_KEY = process.env.SECRET_KEY || 'secretKey';
 
 // Initialisierungen
-db.sync({ force: false }) // force: false löscht die Tabellen nicht, wenn sie bereits existieren
+db.sync({ force: true }) // force: false löscht die Tabellen nicht, wenn sie bereits existieren
     .then(() => {
         console.log("database connected");
         return initializeAdminUser();
@@ -88,14 +105,53 @@ app.post('/login', async (req, res) => {
 });
 
 // Route für Produkte
-app.post('/products', async (req, res) => {
+app.post('/products', authenticateToken, async (req, res) => {
+  try {
+    const { name, description, price, imagePath } = req.body;
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      imagePath
+    });
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+  app.get('/products', authenticateToken, async (req, res) => {
     try {
-      const product = await Product.create(req.body);
-      res.status(201).json(product);
+      const products = await Product.findAll();
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put('/products/:id', authenticateToken, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, description, price, imagePath } = req.body;
+      
+      const product = await Product.findByPk(id);
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+  
+      await product.update({
+        name,
+        description,
+        price,
+        imagePath
+      });
+  
+      res.json(product);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   });
+
 
 
 const PORT = 5001;
