@@ -42,11 +42,11 @@ export class AuthService {
       );
   }
 
-  logout() {
+  async logout() {
     // Entferne User aus localStorage
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    await this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
