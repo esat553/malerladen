@@ -23,7 +23,7 @@ const Product = sequelize.define('Product', {
         type: DataTypes.INTEGER,
         defaultValue: 0,
     },
-    Image: {
+    imagePath: {
         type: DataTypes.STRING,
         allowNull: true,
     },

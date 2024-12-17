@@ -17,7 +17,7 @@
 
   <div class="content">
     <div class="products-container">
-      @for (product of products; track $index) {
+      @for (product of products(); track $index) {
       <mat-card class="product-item">
         <span class="price-tag">{{ product.price }}€</span>
         <img mat-card-image [src]="product.imagePath" [alt]="product.name" />
