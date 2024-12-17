@@ -40,6 +40,7 @@ export class ProductsComponent implements OnInit {
       width: '500px',
       maxWidth: '80vw',
       disableClose: true,
+      data: { isEdit: false },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -48,13 +49,19 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
-  editProduct(_t25: {
-    name: string;
-    description: string;
-    price: number;
-    imagePath: string;
-  }) {
-    throw new Error('Method not implemented.');
+  editProduct(product: Product) {
+    const dialogRef = this.dialog.open(AddProductDialogComponent, {
+      width: '500px',
+      maxWidth: '80vw',
+      disableClose: true,
+      data: { isEdit: true, product },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.productsService.editProduct(product.id, result.product);
+      }
+    });
   }
 
   removeItem(id: number) {

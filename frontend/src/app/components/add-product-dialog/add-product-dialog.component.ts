@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -11,6 +11,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Product } from '../../interfaces/Product.interface';
+import { DialogData } from '../../interfaces/DialogData.interface';
 
 @Component({
   selector: 'app-add-product-dialog',
@@ -30,16 +33,27 @@ export class AddProductDialogComponent {
   private dialogRef = inject(MatDialogRef<AddProductDialogComponent>);
   private fb = inject(FormBuilder);
 
+  isEdit = false;
+  product?: Product;
+
   productForm: FormGroup;
   selectedImageUrl: string | null = null;
 
-  constructor() {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.isEdit = data.isEdit;
     this.productForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      price: ['', [Validators.required, Validators.min(0)]],
-      image: [''],
+      name: [data.product?.name || '', Validators.required],
+      description: [data.product?.description || '', Validators.required],
+      price: [
+        data.product?.price || '',
+        [Validators.required, Validators.min(0)],
+      ],
+      image: [data.product?.imagePath || ''],
     });
+
+    if (data.product?.imagePath) {
+      this.selectedImageUrl = data.product.imagePath;
+    }
   }
 
   onCancel(): void {
@@ -62,7 +76,7 @@ export class AddProductDialogComponent {
         ...this.productForm.value,
         imagePath: this.selectedImageUrl,
       };
-      this.dialogRef.close(product);
+      this.dialogRef.close({ isEdit: this.isEdit, product });
     }
   }
 }
