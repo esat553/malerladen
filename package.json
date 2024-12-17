@@ -1,0 +1,13 @@
+{
+  "name": "malerladen",
+  "version": "1.0.0",
+  "description": "Ein kleines Projekt um Angular Frontend mit einer ProgreSQL Datenbank zu verknüpfen",
+  "scripts": {
+    "backend": "cd backend && npm run start",
+    "frontend": "cd frontend && npx ng serve",
+    "start:all": "npm run backend & npm run frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
