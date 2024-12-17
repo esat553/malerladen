@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, WritableSignal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { NavComponent } from '../../components/nav/nav.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -30,9 +36,30 @@ export class ProductsComponent implements OnInit {
   private productsService = inject(ProductsService);
   private dialog = inject(MatDialog);
   products: WritableSignal<Product[]> = this.productsService.getProductsList();
+  filteredProducts: WritableSignal<Product[]> =
+    this.productsService.getProductsList();
+  searchTerm: string = '';
 
   ngOnInit() {
     this.productsService.fetchProducts();
+  }
+
+  searchProducts(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
+    this.searchTerm = searchTerm;
+
+    if (!searchTerm) {
+      this.filteredProducts = this.products;
+      return;
+    }
+
+    const filtered = this.products().filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm)
+    );
+
+    this.filteredProducts = signal(filtered);
   }
 
   openAddProductDialog() {

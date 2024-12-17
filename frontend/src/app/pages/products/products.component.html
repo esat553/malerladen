@@ -4,7 +4,11 @@
   <mat-card class="filter-section">
     <mat-form-field appearance="outline">
       <mat-label>Suche nach Produkten</mat-label>
-      <input matInput placeholder="Type to search..." />
+      <input
+        matInput
+        placeholder="Type to search..."
+        (input)="searchProducts($event)"
+      />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
@@ -16,6 +20,11 @@
   </mat-card>
 
   <div class="content">
+    <div class="products-container">
+      @for (product of filteredProducts(); track $index) {
+      <!-- Rest of your product card code stays the same -->
+      }
+    </div>
     <div class="products-container">
       @for (product of products(); track $index) {
       <mat-card class="product-item">
