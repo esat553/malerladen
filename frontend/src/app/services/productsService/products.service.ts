@@ -35,6 +35,14 @@ export class ProductsService {
       error: (err) => console.error('Error updating product:', err),
     });
   }
+  deleteProduct(id: number) {
+    this.api.delete<void>(`/products/${id}`).subscribe({
+      next: () => {
+        this.products.update((products) => products.filter((p) => p.id !== id));
+      },
+      error: (err) => console.error('Error deleting product:', err),
+    });
+  }
 
   getProductsList() {
     return this.products;

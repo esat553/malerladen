@@ -60,7 +60,7 @@ export class AddProductDialogComponent {
     if (this.productForm.valid) {
       const product = {
         ...this.productForm.value,
-        imagePath: this.selectedImageUrl || 'https://picsum.photos/400/300',
+        imagePath: this.selectedImageUrl,
       };
       this.dialogRef.close(product);
     }

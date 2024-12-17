@@ -20,7 +20,11 @@
       @for (product of products(); track $index) {
       <mat-card class="product-item">
         <span class="price-tag">{{ product.price }}€</span>
-        <img mat-card-image [src]="product.imagePath" [alt]="product.name" />
+        <img
+          mat-card-image
+          [src]="product.imagePath || 'assets/images/standardUtensils.png'"
+          [alt]="product.name"
+        />
 
         <mat-card-content class="product-content">
           <mat-card-title>{{ product.name }}</mat-card-title>
@@ -35,7 +39,7 @@
           >
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="removeItem($index)">
+          <button mat-icon-button color="warn" (click)="removeItem(product.id)">
             <mat-icon>delete</mat-icon>
           </button>
         </mat-card-actions>

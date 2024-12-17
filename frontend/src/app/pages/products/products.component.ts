@@ -56,8 +56,9 @@ export class ProductsComponent implements OnInit {
   }) {
     throw new Error('Method not implemented.');
   }
-  removeItem(index: number) {
-    throw new Error('Method not implemented.');
+
+  removeItem(id: number) {
+    this.productsService.deleteProduct(id);
   }
 
   debug() {
