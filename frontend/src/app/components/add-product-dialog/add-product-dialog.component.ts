@@ -48,7 +48,7 @@ export class AddProductDialogComponent {
         data.product?.price || '',
         [Validators.required, Validators.min(0)],
       ],
-      image: [data.product?.imagePath || ''],
+      imagePath: [data.product?.imagePath || ''],
     });
 
     if (data.product?.imagePath) {
@@ -65,7 +65,7 @@ export class AddProductDialogComponent {
     if (file) {
       this.selectedImageUrl = URL.createObjectURL(file);
       this.productForm.patchValue({
-        image: this.selectedImageUrl,
+        imagePath: this.selectedImageUrl,
       });
     }
   }
@@ -74,7 +74,7 @@ export class AddProductDialogComponent {
     if (this.productForm.valid) {
       const product = {
         ...this.productForm.value,
-        imagePath: this.selectedImageUrl,
+        imagePath: this.selectedImageUrl || '',
       };
       this.dialogRef.close({ isEdit: this.isEdit, product });
     }

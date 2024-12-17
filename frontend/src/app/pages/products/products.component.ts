@@ -72,7 +72,7 @@ export class ProductsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.productsService.addProduct(result);
+        this.productsService.addProduct(result.product);
       }
     });
   }
